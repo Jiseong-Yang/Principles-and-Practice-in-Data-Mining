@@ -12,7 +12,7 @@ from sklearn.cross_validation import train_test_split
 
 # In[3]:
 
-# 경로지정 및 데이터 불러오기
+# 경로지정 및 데이터 불러오기(작업 환경에 따라 데이터셋이 있는 디렉토리로 경로 변경)
 os.chdir("C:/Users/Jiseong Yang/Documents/양지성/Scholar/정규학기/3-2/데이터마이닝실습/프로젝트/777랜덤데이터셋")
 os.getcwd()
 xy = np.loadtxt('bank_dataset.csv',delimiter=',',dtype=np.float32)
