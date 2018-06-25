@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[2]:
-
 # 필요한 모듈 불러오기
 import tensorflow as tf
 import numpy as np
@@ -10,9 +5,7 @@ import os
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.cross_validation import train_test_split
 
-# In[3]:
-
-# 경로지정 및 데이터 불러오기(작업 환경에 따라 데이터셋이 있는 디렉토리로 경로 변경)
+# Working Space 지정
 os.chdir("C:/Users/Jiseong Yang/Documents/양지성/Scholar/정규학기/3-2/데이터마이닝실습/프로젝트/777랜덤데이터셋")
 os.getcwd()
 
@@ -20,19 +13,19 @@ os.getcwd()
 xy = np.loadtxt('bank_dataset.csv',delimiter=',',dtype=np.float32)
 xy_train,xy_test = train_test_split(xy,test_size=0.2)
 
-#%% 훈련데이터 표준화 스케일링
+# 훈련데이터 표준화 스케일링
 xy_1 = xy_train[:,0:5]
 xy_2 = xy_train[:,5:10]
 xy_standadized_skl = StandardScaler().fit_transform(xy_1)
 xy_train = np.concatenate((xy_standadized_skl,xy_2), axis=1)
 
-#%% 검정데이터 표준화 스케일링
+# 검정데이터 표준화 스케일링
 xy_3 = xy_test[:,0:5]
 xy_4 = xy_test[:,5:10]
 xy_standadized_sk2 = StandardScaler().fit_transform(xy_3)
 xy_test = np.concatenate((xy_standadized_sk2,xy_4), axis=1)
 
-#%%
+# 예측값과의 비교를 통한 정확도 계산을 위해 맨 마지막 행의 실제값 분리
 x_data_train = xy_train[:,:-1]
 y_data_train = xy_train[:,[-1]]
 x_data_test = xy_test[:,:-1]
@@ -50,23 +43,15 @@ y_data_test = xy_test[:,[-1]]
 #x_data_test = train[:,:-1]
 #y_data_test = train[:,[-1]]
 
-
-# In[5]:
-
 # 하이퍼파라미터(학습률, dropout, thresghold) 지정
 tf.reset_default_graph()
 learning_rate = 0.003
-keep_prob = tf.placeholder_with_default(0.6, shape=())
+keep_prob = tf.placeholder_with_default(0.5, shape=())
 threshold = tf.placeholder_with_default(0.65, shape=())
-
-# In[6]:
 
 # Placeholders 지정
 X = tf.placeholder(tf.float32, [None, 9])
 Y = tf.placeholder(tf.float32, [None, 1])
-
-
-# In[7]:
 
 # Input과 output 갯수 설정
 num_in = 9
@@ -121,9 +106,6 @@ b6 = tf.get_variable("bias6", shape=[num_out], dtype = tf.float32,
 hypothesis = tf.sigmoid(tf.matmul(L5, W6) + b6)
 hypothesis = tf.clip_by_value(hypothesis,1e-1, 1-(1e-1))
 
-
-# In[8]:
-
 # cost 함수 정의와 optimizer 지정
 cost = -tf.reduce_mean(Y * tf.log(hypothesis) + (1 - Y) * tf.log(1 - hypothesis))
 
@@ -131,9 +113,6 @@ train = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 predicted = tf.cast(hypothesis > threshold, dtype=tf.float32)
 accuracy = tf.reduce_mean(tf.cast(tf.equal(predicted, Y), dtype=tf.float32))
-
-
-# In[9]:
 
 # 데이터셋 학습
 with tf.Session() as sess:
